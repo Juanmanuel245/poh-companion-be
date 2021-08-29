@@ -21,6 +21,21 @@ const CodexSchema = Schema({
         type: String,
         require: true
     },
+    visits: {
+        type: Number,
+        require: true,
+        default: 0
+    },
+    positive_vote: {
+        type: Number,
+        require: true,
+        default: 0
+    },
+    negative_vote: {
+        type: Number,
+        require: true,
+        default: 0
+    },
     
     user: { type: Schema.Types.ObjectId, ref: 'User', require: true }
 });

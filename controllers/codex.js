@@ -1,6 +1,7 @@
 const { response } = require('express');
 const Codex = require('../models/Codex');
 
+
 const createCodex = async (req, res = response) =>{
     const { title, author, source, link, meta } = req.body;
 
@@ -98,6 +99,73 @@ const getCodex = async (req, res = response) =>{
 
 };
 
+const addVoteCodex = async (req, res = response) =>{
+
+    const codexId = req.params.id;
+    const type = req.body.type;
+    let codexActualizado;
+
+    try {
+        const codex = await Codex.findById( codexId ).populate('user');
+
+        if ( !codex ){
+            return res.status(404).json({
+                ok: false,
+                msg: 'El codex no existe.'
+            });
+        }
+
+        if(type === 'positive'){
+            codexActualizado = await Codex.findByIdAndUpdate( codexId, { positive_vote : codex.positive_vote + 1}, { new: true } );
+        }else if(type === 'negative'){
+            codexActualizado = await Codex.findByIdAndUpdate( codexId, { negative_vote : codex.negative_vote + 1}, { new: true } );
+        }
+
+        return res.json({
+            ok: true,
+            codexActualizado
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador.'
+        });
+    }
+
+};
+
+const addVisitCodex = async (req, res = response) =>{
+
+    const codexId = req.params.id;
+
+    try {
+        const codex = await Codex.findById( codexId ).populate('user');
+
+        if ( !codex ){
+            return res.status(404).json({
+                ok: false,
+                msg: 'El codex no existe.'
+            });
+        }
+        const codexActualizado = await Codex.findByIdAndUpdate( codexId, { visits : codex.visits + 1}, { new: true } );
+
+        return res.json({
+            ok: true,
+            codexActualizado
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador.'
+        });
+    }
+
+};
+
 const getCodexes = async (req, res = response) =>{
 
     try {
@@ -124,5 +192,7 @@ module.exports = {
     createCodex,
     getCodexByMeta,
     getCodex,
-    getCodexes
+    getCodexes,
+    addVisitCodex,
+    addVoteCodex
 }
