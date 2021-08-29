@@ -4,6 +4,16 @@ const Codex = require('../models/Codex');
 const createCodex = async (req, res = response) =>{
     const { title, author, source, link, meta } = req.body;
 
+
+    const codexExists = await Codex.findOne({ title, author, source });
+
+    if ( codexExists ){
+        return res.status(400).json({
+            ok: false,
+            msg: 'Ya existe el instructivo en el sistema.'
+        }) 
+    }
+
     try {
         codex = new Codex( req.body );
         
