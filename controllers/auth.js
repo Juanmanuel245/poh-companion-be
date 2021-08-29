@@ -10,12 +10,12 @@ const createUser = async (req, res = response) =>{
     
     try {
 
-        let user = await User.findOne({ email });
+        let user = await User.findOne({ username });
         
         if ( user ){
             return res.status(400).json({
                 ok: false,
-                msg: 'Ya existe un usuario con ese correo.'
+                msg: 'Ya existe un usuario con ese nombre.'
             }) 
         }
 
